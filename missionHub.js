@@ -26,30 +26,6 @@ angular.module('missionApp', []).controller('missionHub', function($scope, $http
 	// Allow use from angular
 	hub._isFunction	= _.isFunction;
 	
-	// Executed when the user click the "Execute" button
-	hub.apicall = function(item) {
-		var params;
-		if (_.isFunction(item.params)) {
-			params = item.params();
-		} else {
-			params = item.params;
-		}
-		$.ajax({
-			url:		item.endpoint,
-			dataType:	"jsonp",
-			data:		params,
-			success: function(response) {
-				console.log("response",response);
-				$scope.safeApply(function() {
-					item.response = response;
-					if (item.callback) {
-						item.callback(response);
-					}
-				});
-			}
-		});
-	}
-	
 	// Contains the temporary data for the authentication calls
 	hub.authBuffer = [];
 	
@@ -121,13 +97,16 @@ angular.module('missionApp', []).controller('missionHub', function($scope, $http
 		var s = 1000;
     	var m = s * 60;
     	var h = m * 60;
-	    var d = date - date_created;
-	        if (d > h)
-	            return Math.floor(d / h) + ' hour(s) ago';
-	        if (d > m)
-	            return Math.floor(d / m) + ' minute(s) ago';
-	        if (d > s)
-	            return Math.floor(d / s) + ' second(s) ago';
+    	var d = h * 24;
+	    var diff = date - date_created;
+	    	if (diff > d)
+	            return Math.floor(diff / d) + ' day(s) ago';
+	        if (diff > h)
+	            return Math.floor(diff / h) + ' hour(s) ago';
+	        if (diff > m)
+	            return Math.floor(diff / m) + ' minute(s) ago';
+	        if (diff > s)
+	            return Math.floor(diff / s) + ' second(s) ago';
 	        return 'just now';
 	}
 
@@ -143,7 +122,6 @@ angular.module('missionApp', []).controller('missionHub', function($scope, $http
 				$scope.safeApply(function() {
 					hub.taskBuffer = _.extend(hub.taskBuffer, response);
 				});
-				console.log("taskbuffer", hub.taskBuffer);
 			}
 		});
 	}
@@ -215,139 +193,4 @@ angular.module('missionApp', []).controller('missionHub', function($scope, $http
 			}
 		});
     }
-
-	hub.calls = [{
-		endpoint:	getEndpointUrl('/api/auth/register'),
-		params: {
-			email:		hub.authBuffer.email,
-			password:	hub.authBuffer.password
-		},
-		allowed:	function() {
-			return hub.authBuffer.email && hub.authBuffer.password;
-		},
-		callback:	function(response) {
-			$scope.safeApply(function() {
-				hub.authBuffer = _.extend(hub.authBuffer, response);
-			});
-		}
-	}, {
-		endpoint:	getEndpointUrl('/api/auth/login'),
-		params: {
-			email:		hub.authBuffer.email,
-			password:	hub.authBuffer.password
-		},
-		allowed:	function() {
-			return hub.authBuffer.email && hub.authBuffer.password;
-		},
-		callback:	function(response) {
-			$scope.safeApply(function() {
-				hub.authBuffer = _.extend(hub.authBuffer, response);
-			});
-		}
-	}, {
-		endpoint:	getEndpointUrl('/api/auth/save'),
-		params: function() {
-			return {
-				uid:		hub.authBuffer.uid,
-				token:		hub.authBuffer.token,
-				data: {
-					name:	'Hello World'
-				}
-			}
-		},
-		allowed:	function() {
-			return hub.authBuffer.uid && hub.authBuffer.token;
-		},
-		callback:	function(response) {
-			
-		}
-	}, {
-		endpoint:	getEndpointUrl('/api/task/create'),
-		params: function() {
-			return {
-				uid:		hub.authBuffer.uid,
-				token:		hub.authBuffer.token,
-				data: {
-					title:	"Hello world test task",
-					text:	'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-					status:	'pending'
-				}
-			}
-		},
-		allowed:	function() {
-			return hub.authBuffer.uid && hub.authBuffer.token;
-		},
-		callback:	function(response) {
-			$scope.safeApply(function() {
-				hub.taskBuffer = _.extend(hub.taskBuffer, response);
-			});
-		}
-	}, {
-		endpoint:	getEndpointUrl('/api/task/list'),
-		params: function() {
-			return {
-				uid:		hub.authBuffer.uid,
-				token:		hub.authBuffer.token
-			}
-		},
-		allowed:	function() {
-			return hub.authBuffer.uid && hub.authBuffer.token;
-		},
-		callback:	function(response) {
-			
-		}
-	}, {
-		endpoint:	getEndpointUrl('/api/task/update'),
-		params: function() {
-			return {
-				uid:		hub.authBuffer.uid,
-				token:		hub.authBuffer.token,
-				id:			hub.taskBuffer.id,
-				data: {
-					status: 'completed'
-				}
-			}
-		},
-		allowed:	function() {
-			return hub.authBuffer.uid && hub.authBuffer.token && hub.taskBuffer.id;
-		},
-		callback:	function(response) {
-			
-		}
-	}, {
-		endpoint:	getEndpointUrl('/api/task/get'),
-		params: function() {
-			return {
-				uid:		hub.authBuffer.uid,
-				token:		hub.authBuffer.token,
-				id:			hub.taskBuffer.id
-			}
-		},
-		allowed:	function() {
-			return hub.authBuffer.uid && hub.authBuffer.token && hub.taskBuffer.id;
-		},
-		callback:	function(response) {
-			
-		}
-	}, {
-		endpoint:	getEndpointUrl('/api/task/remove'),
-		params: function() {
-			return {
-				uid:		hub.authBuffer.uid,
-				token:		hub.authBuffer.token,
-				id:			hub.taskBuffer.id
-			}
-		},
-		allowed:	function() {
-			return hub.authBuffer.uid && hub.authBuffer.token && hub.taskBuffer.id;
-		},
-		callback:	function(response) {
-			$scope.safeApply(function() {
-				delete hub.taskBuffer.id;
-			});
-		}
-	}];
-	
-	
-	
 })

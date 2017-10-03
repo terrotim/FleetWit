@@ -15,20 +15,16 @@
 	         			<label for="email">Email address</label>
 	            		<input type="text" class="form-control" ng-model="email" placeholder="Enter email address" required=""/>
 	          		</div> 
-
 	          		<div class="form-group">
 	          			<label for="password">Password</label>
 	            		<input type="password" class="form-control" ng-model="password" placeholder="Enter password" required=""/>
 	          		</div>
-
 	          		<div class="form-group">
 	          			<button type="button" class="btn btn-primary" ng-click="hub.login(email,password)">Log In</button>
 	            		<button type="button" class="btn btn-primary" ng-click="hub.register(email,password)">Register</button>
 	          		</div>
-
         		</div>
       		</form>
-
 		</div>
 
 		
@@ -58,30 +54,28 @@
 
       		Here are your current missions.
       		<div>
-      		<button ng-click="hub.toggleAddMission()" class="btn btn-success">Add new mission +</button>
+      			<button ng-click="hub.toggleAddMission()" class="btn btn-success">Add new mission +</button>
       		</div>
 
       		<modal title="Login form" ng-show="showAddMissionModal">
       			<div>
       				<h4>Add a new mission to your mission list.</h4>
-			    			<form class="form">
-					          <div class="modal-body">
-					          	<div class="col-md-2">
-						            <label>Mission Title</label>
-						            <input type="text" ng-model="mission_title" />
-					            </div>
-					            <div class="col-md-4">
-						            <label>Description</label>
-						            <textarea rows="4" cols="50" ng-model="mission_description">
-
-									</textarea>
-								</div>
-					          </div>
-
-					          <div class="modal-footer">
-					              <button type="button" class="btn btn-primary" ng-click="hub.toggleAddMission(); hub.create(mission_title, mission_description)">Add</button>
-					          </div>
-					        </form>
+	    			<form class="form">
+			          	<div class="modal-body">
+			          		<div class="col-md-2">
+				            	<label>Mission Title</label>
+				            	<input type="text" ng-model="mission_title" />
+			            	</div>
+			            	<div class="col-md-4">
+				            	<label>Description</label>
+				            	<textarea rows="4" cols="50" ng-model="mission_description">
+				            	</textarea>
+							</div>
+			          	</div>
+			          	<div class="modal-footer">
+			              	<button type="button" class="btn btn-primary" ng-click="hub.toggleAddMission(); hub.create(mission_title, mission_description)">Add</button>
+			          	</div>
+				    </form>
 				</div>
 			</modal>
 
@@ -97,29 +91,15 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="task in hub.taskBuffer">
-
 						<td>{{hub.getTime(task)}}</td>
 						<td>{{task.data.mission_title}}</td>
 						<td>{{task.data.mission_description}}</td>
 						<td>{{task.data.status}}</td>
 						<td><button type="button" class="btn btn-primary" ng-click="hub.update(task, $index)">Edit</button></td>
 						<td><button type="button" class="btn btn-primary" ng-click="hub.remove(task, $index)">Remove</button></td>
-
 					</tr>
 				</tbody>
 			</table>
-
-
-			<!--
-			<div ng-repeat="item in hub.calls">
-				<div ng-if="item.allowed()">
-				{{item.endpoint}}
-				{{hub._isFunction(item.params)?item.params():item.params|json}}
-				{{item.response|json}}
-				<button type="button" class="btn btn-primary" ng-click="hub.apicall(item)">Execute</button>
-				</div>
-			</div>
-			-->
 		</div>
 		
 
