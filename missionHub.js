@@ -1,4 +1,6 @@
-angular.module('missionApp', []).controller('missionHub', function($scope, $http) {
+var missionApp = angular.module('missionApp', []);
+
+missionApp.controller('missionHub', function($scope, $http) {
 	var hub = this;
 	
 	$scope.safeApply = function(fn) {
@@ -193,4 +195,4 @@ angular.module('missionApp', []).controller('missionHub', function($scope, $http
 			}
 		});
     }
-})
+});
